@@ -10,7 +10,7 @@
 // export const textMessageController = async (req, res) => {
 //     try {
 //         const userId = req.user._id
-        
+
 //         // check credits
 //         if (req.user.credits < 1) {
 //             return res.json({
@@ -213,11 +213,232 @@ export const textMessageController = async (req, res) => {
 
 
 // Image generation message controller
+// export const imageMessageController = async (req, res) => {
+//     try {
+//         const userId = req.user._id
+
+//         // check credits
+//         if (req.user.credits < 2) {
+//             return res.json({
+//                 success: false,
+//                 message: "You dont have enough credits to use this feature"
+//             })
+//         }
+
+//         const { prompt, chatId, isPublished } = req.body
+
+//         // find chat
+//         const chat = await Chat.findOne({
+//             userId,
+//             _id: chatId
+//         })
+
+//         if (!chat) {
+//             return res.json({
+//                 success: false,
+//                 message: "Chat not found"
+//             })
+//         }
+
+//         // push user message
+//         chat.messages.push({
+//             role: "user",
+//             content: prompt,
+//             timestamp: Date.now(),
+//             isImage: false
+//         })
+
+//         // encode the prompt
+//         const encodedPrompt = encodeURIComponent(prompt)
+
+//         // construct imagekit ai generation url
+//         const generatedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/ik-genimg-prompt-${encodedPrompt}/quickgpt/${Date.now()}.png?tr=w-800,h-800`
+
+//         // trigger generation by fetching from imagekit
+//         const aiImageResponse = await axios.get(generatedImageUrl, {
+//             responseType: "arraybuffer"
+//         })
+
+//         // convert to base64
+//         const base64Image = `data:image/png;base64,${Buffer.from(aiImageResponse.data, "binary").toString("base64")}`
+
+//         // upload to imagekit media library
+//         const uploadResponse = await imagekit.upload({
+//             file: base64Image,
+//             fileName: `${Date.now()}.png`,
+//             folder: "buildgpt",
+//         })
+
+//         const reply = {
+//             role: "assistant",
+//             content: uploadResponse.url,
+//             timestamp: Date.now(),
+//             isImage: true,
+//             isPublished
+//         }
+
+//         chat.messages.push(reply)
+//         await chat.save()
+
+//         await User.updateOne(
+//             { _id: userId },
+//             { $inc: { credits: -2 } }
+//         )
+
+//         res.json({
+//             success: true,
+//             reply
+//         })
+//     }
+//     catch (err) {
+//     console.log("IMAGE ERROR:", err.response?.data || err.message)
+
+//     return res.json({
+//         success: false,
+//         message: err.response?.data?.message || err.message
+//     })
+// }
+// }
+
+// export const imageMessageController = async (req, res) => {
+//     try {
+//         const userId = req.user._id
+
+//         // check credits
+//         if (req.user.credits < 2) {
+//             return res.json({
+//                 success: false,
+//                 message: "You dont have enough credits to use this feature"
+//             })
+//         }
+
+//         const { prompt, chatId, isPublished } = req.body
+
+//         // find chat
+//         const chat = await Chat.findOne({
+//             userId,
+//             _id: chatId
+//         })
+
+//         if (!chat) {
+//             return res.json({
+//                 success: false,
+//                 message: "Chat not found"
+//             })
+//         }
+
+//         // push user message
+//         chat.messages.push({
+//             role: "user",
+//             content: prompt,
+//             timestamp: Date.now(),
+//             isImage: false
+//         })
+
+//         // encode the prompt
+//         const encodedPrompt = encodeURIComponent(prompt)
+
+//         // construct imagekit ai generation url
+//         const generatedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/ik-genimg-prompt-${encodedPrompt}/quickgpt/${Date.now()}.png`
+
+//         const reply = {
+//             role: "assistant",
+//             content: generatedImageUrl,
+//             timestamp: Date.now(),
+//             isImage: true,
+//             isPublished
+//         }
+
+//         chat.messages.push(reply)
+//         await chat.save()
+
+//         // deduct credits
+//         await User.updateOne(
+//             { _id: userId },
+//             { $inc: { credits: -2 } }
+//         )
+
+//         res.json({
+//             success: true,
+//             reply
+//         })
+//     }
+//     catch (err) {
+//         return res.json({
+//             success: false,
+//             message: err.message
+//         })
+//     }
+// }
+
+// Image generation message controller
+// export const imageMessageController = async (req, res) => {
+//     try {
+//         const userId = req.user._id
+//         // check credits
+//         if (req.user.credits < 2) {
+//             return res.json({
+//                 success: true,
+//                 message: "You dont have enough credist to use this feature"
+//             })
+//         }
+//         const { prompt, chatId, isPublished } = req.body
+//         // find chat
+//         const chat = await Chat.findOne({
+//             userId, _id: chatId
+//         })
+
+//         // push user message
+//         chat.messages.push({
+//             role: "user",
+//             content: prompt,
+//             timestamp: Date.now(),
+//             isImage: false
+//         })
+
+//         // encode the prompt
+//         const encodedPrompt = encodeURIComponent(prompt)
+
+//         // construct imagekit ai generation url
+//         const generatedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/ik-genimg-prompt-${encodedPrompt}/quickgpt/${Date.now()}.png?tr=w-800,h-800`
+
+//         // trigger generation by fetching from imagekit
+//         const aiImageResponse = await axios.get(generatedImageUrl, { responseType: "arraybuffer" })
+
+//         // convert to base64
+//         const base64Iamge = `data:image/png;base64,${Buffer.from(aiImageResponse.data, "binary").toString('base64')}`
+
+//         // upload to imagekit media library
+//         const uploadResponse = await imagekit.upload({
+//             file: base64Image,
+//             fileName: `${Date.now()}.png`,
+//             folder: "buildgpt",
+//         })
+
+//         const reply = { role: 'assistant', content: uploadResponse.url, timestamp: Date.now(), isImage: true, isPublished }
+//         res.json({
+//             success: true,
+//             reply
+//         })
+
+//         chat.messages.push(reply)
+//         await chat.save()
+
+//         await User.updateOne({ _id: userId }, { $inc: { credits: -2 } })
+
+//     }
+//     catch (err) {
+//         return res.json({
+//             success: false,
+//             message: err.message
+//         })
+//     }
+// }
+
 export const imageMessageController = async (req, res) => {
     try {
         const userId = req.user._id
 
-        // check credits
         if (req.user.credits < 2) {
             return res.json({
                 success: false,
@@ -227,7 +448,6 @@ export const imageMessageController = async (req, res) => {
 
         const { prompt, chatId, isPublished } = req.body
 
-        // find chat
         const chat = await Chat.findOne({
             userId,
             _id: chatId
@@ -240,7 +460,6 @@ export const imageMessageController = async (req, res) => {
             })
         }
 
-        // push user message
         chat.messages.push({
             role: "user",
             content: prompt,
@@ -248,36 +467,20 @@ export const imageMessageController = async (req, res) => {
             isImage: false
         })
 
-        // encode the prompt
         const encodedPrompt = encodeURIComponent(prompt)
 
-        // construct imagekit ai generation url
-        const generatedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/ik-genimg-prompt-${encodedPrompt}/quickgpt/${Date.now()}.png?tr=w-800,h-800`
-
-        // trigger generation by fetching from imagekit
-        const aiImageResponse = await axios.get(generatedImageUrl, {
-            responseType: "arraybuffer"
-        })
-
-        // convert to base64
-        const base64Image = `data:image/png;base64,${Buffer.from(aiImageResponse.data, "binary").toString("base64")}`
-
-        // upload to imagekit media library
-        const uploadResponse = await imagekit.upload({
-            file: base64Image,
-            fileName: `${Date.now()}.png`,
-            folder: "buildgpt",
-        })
+        const generatedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/ik-genimg-prompt-${encodedPrompt}/quickgpt/${Date.now()}.png`
 
         const reply = {
             role: "assistant",
-            content: uploadResponse.url,
+            content: generatedImageUrl,
             timestamp: Date.now(),
             isImage: true,
             isPublished
         }
 
         chat.messages.push(reply)
+
         await chat.save()
 
         await User.updateOne(
@@ -289,8 +492,8 @@ export const imageMessageController = async (req, res) => {
             success: true,
             reply
         })
-    }
-    catch (err) {
+
+    } catch (err) {
         return res.json({
             success: false,
             message: err.message
