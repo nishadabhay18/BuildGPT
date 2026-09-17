@@ -19,7 +19,11 @@ app.post("/api/stripe", express.raw({
 
 
 // middleware
-app.use(cors())
+// app.use(cors())
+app.use(cors({
+    origin: "https://build-gpt-woad.vercel.app",
+    credentials: true
+}))
 app.use(express.json())
 
 
