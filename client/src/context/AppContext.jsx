@@ -88,7 +88,7 @@ export const AppContextProvider = ({ children }) => {
         }
         localStorage.setItem('theme', theme)
     }, [theme])
-
+    
     useEffect(() => {
         if (user) {
             fetchUsersChats()
@@ -116,7 +116,9 @@ export const AppContextProvider = ({ children }) => {
     const value = { navigate, user, setUser, chats, setChats, selectedChat, setSelectedChat, theme, setTheme, loadingUser, setLoadingUser, createNewChat, fetchUsersChats, token, setToken, axios }
 
     return (
-        <AppContext.Provider value={value}>{children}</AppContext.Provider>
+        <AppContext.Provider value={value}>
+            {children}
+        </AppContext.Provider>
     )
 }
 
